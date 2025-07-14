@@ -1,21 +1,39 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Install Dependency') {
-            steps {
-                script {
+    environment {
+        NODE_VERSION = 'NodeJS_18'
+    }
 
-                    sh 'npm install'
-                }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
             }
         }
-        stage('Run Tests') {
+        
+        stage('Install Dependencies') {
             steps {
-                script {
-                    sh 'npm test'
-                }
+                sh 'npm install'
             }
+        }
+       
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        
+    }
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Build succeeded!'
+        }
+        failure {
+            echo 'Build failed.'
         }
     }
 }
